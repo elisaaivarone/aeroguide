@@ -1,32 +1,33 @@
 import sqlite3
 
 def iniciar_banco():
-    # Conecta ao banco (isso cria um arquivo chamado aeroguide.db na sua pasta)
+    # Conecta ao banco de dados 
     conexao = sqlite3.connect("aeroguide.db")
-    cursor = conexao.cursor() # O cursor é quem "executa" os comandos SQL
+    cursor = conexao.cursor()
 
-    # Criação da tabela usando SQL 
+    # Cria a tabela focada em operações de voo
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS destinos (
+        CREATE TABLE IF NOT EXISTS voos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            pais TEXT NOT NULL,
-            capital TEXT,
-            curiosidade_historica TEXT
+            numero_voo TEXT NOT NULL,
+            origem TEXT,
+            destino TEXT,
+            status TEXT
         )
     """)
 
-    # Verifica se a tabela está vazia. Se estiver, vamos inserir alguns dados.
-    cursor.execute("SELECT COUNT(*) FROM destinos")
+    # Verifica se a tabela está vazia. Se estiver, cadastra os voos da nossa companhia
+    cursor.execute("SELECT COUNT(*) FROM voos")
     if cursor.fetchone()[0] == 0:
-        # Lista de destinos iniciais misturando geografia e história
-        destinos = [
-            ("Japao", "Tóquio", "O Japão é um arquipélago com mais de 6.800 ilhas, e Quioto foi a capital imperial por mais de mil anos."),
-            ("Italia", "Roma", "A península itálica foi o berço do Império Romano, que dominou grande parte da Europa e do Mediterrâneo."),
-            ("Egito", "Cairo", "Lar de uma das civilizações mais antigas do mundo, desenvolvida ao longo do rio Nilo.")
+        # Usando siglas IATA (GRU, SDU, BSB) para manter o padrão profissional da aviação
+        malha_aerea = [
+            ("G3-1520", "GRU", "SDU", "No Horário"),
+            ("G3-2040", "BSB", "SSA", "Atrasado - Manutenção"),
+            ("G3-1090", "CWB", "CGH", "Embarque Próximo")
         ]
         
-        # O comando INSERT coloca os dados na tabela
-        cursor.executemany("INSERT INTO destinos (pais, capital, curiosidade_historica) VALUES (?, ?, ?)", destinos)
-        conexao.commit() # Salva as alterações no banco
+        # Insere os dados na tabela
+        cursor.executemany("INSERT INTO voos (numero_voo, origem, destino, status) VALUES (?, ?, ?, ?)", malha_aerea)
+        conexao.commit() 
 
-    conexao.close() # Fecha a conexão
+    conexao.close() 
