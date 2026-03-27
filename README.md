@@ -20,28 +20,33 @@ Atuar como um sistema de **Briefing Operacional Inteligente**. A API recebe o n�
 
 ## 🚀 Como rodar o projeto localmente
 
-1. Clone o repositório.
-2. Crie um ambiente virtual: `python -m venv venv` e ative-o.
-3. Instale as dependências:
+  ##1. Clone o repositório.##
+  ##2. Crie um ambiente virtual: `python -m venv venv` e ative-o.##
+  ##3. Instale as dependências:##
 
 ```bash
   pip install fastapi uvicorn google-genai requests python-dotenv
 ```
 
-4.Crie um arquivo .env na raiz do projeto com as suas chaves de API:
+  ##4. Crie um arquivo .env na raiz do projeto com as suas chaves de API:##
 
 ```bash
 GEMINI_API_KEY=sua_chave_do_google
 AVIATION_API_KEY=sua_chave_do_aviationstack
 ```
 
-5.Inicie o servidor:
+  ##5. Inicie o servidor:##
 
 ```bash
 uvicorn main:app --reload
 ```
 
-6.Acesse a documentação interativa em: http://127.0.0.1:8000/docs
+  ##6. Acesse a documentação interativa em: `http://127.0.0.1:8000/docs` ##
+
+## 📸 Screenshots
+
+**Dashboard:**
+![Informações de voo](./frontend/screenshots/dashboard.png)
 
 ## 👩‍💻 Autor
 

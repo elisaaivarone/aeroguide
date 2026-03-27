@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
 import os
 import requests # Biblioteca para consumir APIs externas
@@ -17,6 +18,14 @@ cliente_ia = genai.Client(api_key=CHAVE_GOOGLE)
 iniciar_banco()
 
 app = FastAPI(title="AeroGuide Ops API", description="Sistema Híbrido de Logística e Radar")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"], # Permite todas as origens
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def painel_operacional():
