@@ -1,33 +1,32 @@
 import sqlite3
 
-def iniciar_banco():
-    # Conecta ao banco de dados 
-    conexao = sqlite3.connect("aeroguide.db")
-    cursor = conexao.cursor()
-
-    # Cria a tabela focada em operações de voo
+# Função para iniciar o banco de dados e criar a tabela de voos
+def initialize_database():
+    connection = sqlite3.connect("aeroguide.db")
+    cursor = connection.cursor()
+    
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS voos (
+        CREATE TABLE IF NOT EXISTS flights (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            numero_voo TEXT NOT NULL,
-            origem TEXT,
-            destino TEXT,
+            flight_number TEXT NOT NULL,
+            origin TEXT,
+            destination TEXT,
             status TEXT
         )
     """)
 
-    # Verifica se a tabela está vazia. Se estiver, cadastra os voos da nossa companhia
-    cursor.execute("SELECT COUNT(*) FROM voos")
+    # Verifique se a tabela está vazia. Caso esteja, registre os voos da nossa empresa.
+    cursor.execute("SELECT COUNT(*) FROM flights")
     if cursor.fetchone()[0] == 0:
-        # Usando siglas IATA (GRU, SDU, BSB) para manter o padrão profissional da aviação
-        malha_aerea = [
-            ("G3-1520", "GRU", "SDU", "No Horário"),
-            ("G3-2040", "BSB", "SSA", "Atrasado - Manutenção"),
-            ("G3-1090", "CWB", "CGH", "Embarque Próximo")
+        # Dados de exemplo para a malha interna da empresa
+        flight_network = [
+            ("G3-1520", "GRU", "SDU", "On Time"),
+            ("G3-2040", "BSB", "SSA", "Delayed - Maintenance"),
+            ("G3-1090", "CWB", "CGH", "Boarding Soon")
         ]
         
-        # Insere os dados na tabela
-        cursor.executemany("INSERT INTO voos (numero_voo, origem, destino, status) VALUES (?, ?, ?, ?)", malha_aerea)
-        conexao.commit() 
+        # Insere os dados de voos da malha interna
+        cursor.executemany("INSERT INTO flights (flight_number, origin, destination, status) VALUES (?, ?, ?, ?)", flight_network)
+        connection.commit() 
 
-    conexao.close() 
+    connection.close()

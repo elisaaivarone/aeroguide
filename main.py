@@ -5,19 +5,19 @@ import os
 import requests # Biblioteca para consumir APIs externas
 from dotenv import load_dotenv
 from google import genai
-from database import iniciar_banco
+from database import initialize_database
 
 # Carrega as chaves seguras
 load_dotenv()
-CHAVE_GOOGLE = os.getenv("GEMINI_API_KEY")
-CHAVE_AVIATION = os.getenv("AVIATION_API_KEY")
+GOOGLE_API_KEY = os.getenv("GEMINI_API_KEY")
+AVIATION_API_KEY = os.getenv("AVIATION_API_KEY")
 
-cliente_ia = genai.Client(api_key=CHAVE_GOOGLE)
+ai_client = genai.Client(api_key=GOOGLE_API_KEY)
 
 # Inicia o banco de dados
-iniciar_banco()
+initialize_database()
 
-app = FastAPI(title="AeroGuide Ops API", description="Sistema Híbrido de Logística e Radar")
+app = FastAPI(title="AeroGuide Ops API", description="Hybrid Logistics & Radar System")
 
 app.add_middleware(
     CORSMiddleware,
@@ -28,66 +28,78 @@ app.add_middleware(
 )
 
 @app.get("/")
-def painel_operacional():
-    return {"mensagem": "AeroGuide Ops: Sistema de Logística e Briefing online."}
+def operational_panel():
+    return {"mensagem": "AeroGuide Ops: Online Logistics & Briefing System."}
 
-@app.get("/voos/{numero_voo}")
-def briefing_voo(numero_voo: str):
-    numero_voo = numero_voo.upper() # Garante que a busca seja sempre em maiúsculo
+@app.get("/flights/{flight_number}")
+def flight_briefing(flight_number: str):
+    flight_number = flight_number.upper() # Garante que a busca seja sempre em maiúsculo
     
     # 1. (Banco SQL)
-    conexao = sqlite3.connect("aeroguide.db")
-    cursor = conexao.cursor()
-    cursor.execute("SELECT origem, destino, status FROM voos WHERE numero_voo = ?", (numero_voo,))
-    resultado_sql = cursor.fetchone()
-    conexao.close()
+    connection = sqlite3.connect("aeroguide.db")
+    cursor = connection.cursor()
+    cursor.execute("SELECT origin, destination, status FROM flights WHERE flight_number = ?", (flight_number,))
+    sql_result = cursor.fetchone()
+    connection.close()
 
-    if resultado_sql:
-        origem = resultado_sql[0]
-        destino = resultado_sql[1]
-        status = resultado_sql[2]
-        origem_dado = "Malha Interna (SQL)"
+    origin = ""
+    destination = ""
+    status = ""
+    information_source = ""
+    operational_details = None # Variável para armazenar detalhes operacionais adicionais, caso sejam necessários para o briefing
+
+    if sql_result:
+        origin = sql_result[0]
+        destination = sql_result[1]
+        status = sql_result[2]
+        information_source = "Internal Network (SQL)"
+        # Simulação de uma estrutura JSON completa para os dados SQL.
+        operational_details = {
+            "flight_date": "Today",
+            "flight_status": status,
+            "departure": {"iata": origin, "terminal": "S/N", "gate": "S/N", "scheduled": "S/N"},
+            "arrival": {"iata": destination, "terminal": "S/N", "gate": "S/N", "scheduled": "S/N"}
+        }
     
     else:
         # 2. Se não achou no SQL, busca no Radar Global (API Externa AviationStack)
         try:
-            url = f"http://api.aviationstack.com/v1/flights?access_key={CHAVE_AVIATION}&flight_iata={numero_voo}"
-            resposta = requests.get(url)
-            dados_radar = resposta.json()
+            url = f"http://api.aviationstack.com/v1/flights?access_key={AVIATION_API_KEY}&flight_iata={flight_number}"
+            response = requests.get(url)
+            radar_data = response.json()
 
             # Verifica se a API externa encontrou o voo na lista de "data"
-            if "data" in dados_radar and len(dados_radar["data"]) > 0:
-                voo_info = dados_radar["data"][0] # Pega o primeiro voo da lista
-                origem = voo_info["departure"]["iata"]
-                destino = voo_info["arrival"]["iata"]
-                status = voo_info["flight_status"]
-                origem_dado = "Radar Global Externa (AviationStack)"
+            if "data" in radar_data and len(radar_data["data"]) > 0:
+                operational_details = radar_data["data"][0] # Pega o primeiro voo da lista
+                origin = operational_details["departure"]["iata"]
+                destination = operational_details["arrival"]["iata"]
+                status = operational_details["flight_status"]
+                information_source = "Global Radar (AviationStack)"
             else:
-                return {"erro": f"Voo {numero_voo} não localizado nem na malha interna, nem no radar global."}
+                return {"error": f"Flight {flight_number} not located neither in the internal network nor in the global radar."
+                }
         
         except Exception as e:
-            return {"erro": "Falha ao conectar com o Radar Global."}
+            return {"error": "Failed to connect to the Global Radar."}
 
     # 3. A IA atua como Coordenadora e gera o Briefing baseado em quem entregou a informação (SQL ou API)
     try:
         prompt = f"""
-        Atue como um despachante operacional de uma companhia aérea. 
-        Temos o voo {numero_voo} indo do aeroporto {origem} para o {destino}. O status atual é: '{status}'.
-        Escreva um briefing super curto de 1 parágrafo para a equipe de solo.
-        Use termos de aviação, seja direto e dê uma instrução baseada no status.
+        Act as an operational dispatcher of an airline. 
+        We have flight {flight_number} departing from airport {origin} to {destination}. The current status is: '{status}'.
+        Write a super short 1-paragraph briefing for the ground crew (baggage/fueling) and flight attendants.
+        Use aviation technical terms, be direct, and give a clear instruction based on the status.
         """
         
-        resposta_ia = cliente_ia.models.generate_content(
+        ai_response = ai_client.models.generate_content(
             model='gemini-2.5-flash',
             contents=prompt
         )
         
         return {
-            "origem_da_informacao": origem_dado,
-            "voo": numero_voo,
-            "rota": f"{origem} -> {destino}",
-            "status_sistema": status,
-            "briefing_gerado_por_ia": resposta_ia.text
+            "information_source": information_source,
+            "ai_briefing": ai_response.text,
+            "details": operational_details #O React usará isso para o mapa e os detalhes.
         }
     except Exception as e:
-        return {"erro": f"Ops! Sistema da IA indisponível: {str(e)}"}
+        return {"erro": f"Ops! AI system unavailable: {str(e)}"}
