@@ -1,0 +1,13 @@
+# Ignora a pasta do ambiente virtual 
+venv/
+env/
+
+# IGNORA A SUA CHAVE SECRETA 
+.env
+
+# Ignora os arquivos de cache que o Python cria sozinho
+__pycache__/
+*.pyc
+
+# Ignora o banco de dados local
+*.db
