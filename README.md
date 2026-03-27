@@ -45,4 +45,4 @@ uvicorn main:app --reload
 
 ## 👩‍💻 Autor
 
-Desenvolvido por Elisa, estudante de Sistemas para Internet no Senac, com foco no desenvolvimento de aplicações web modernas e integração com Inteligência Artificial.
+Desenvolvido por Elisa, estudante de Engenharia de Software na USP/ESalq, com foco no desenvolvimento de aplicações web modernas e integração com Inteligência Artificial.
