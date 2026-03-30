@@ -142,3 +142,40 @@ body {
 .briefing-box { background: #e0f2fe; border-left: 4px solid #0284c7; padding: 15px; border-radius: 4px; margin-top: 30px; }
 .briefing-box h3 { margin-top: 0; font-size: 14px; color: #0369a1; }
 .briefing-box p { margin: 0; color: #0c4a6e; line-height: 1.5; font-size: 13px; }
+
+/* =========================================
+   RESPONSIVIDADE (MOBILE FIT)
+   ========================================= */
+@media (max-width: 768px) {
+  .search-container {
+    flex-direction: column;
+  }
+
+  .btn-search {
+    width: 100%;
+  }
+
+  .quick-buttons {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .flight-header-box {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .flight-route {
+    justify-content: center;
+  }
+
+  .ops-panel {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .map-leaflet {
+    height: 250px;
+  }
+}
