@@ -48,7 +48,7 @@ function App() {
     setFlight(searchNumber)
 
     try {
-      const response = await fetch(`http://127.0.0.1:8000/flights/${searchNumber}`)
+      const response = await fetch(`https://aeroguide-v57i.onrender.com/flights/${searchNumber}`)
       const data = await response.json()
 
       if (data.error) {
