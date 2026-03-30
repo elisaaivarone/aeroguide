@@ -117,8 +117,53 @@ body {
 
 .flight-status { padding: 8px 16px; border-radius: 4px; color: #fe7020; font-weight: bold; font-size: 14px; }
 
+/* 2.BANNER DA COMPANHIA AÉREA (FOTO E LOGO) */
+.airline-banner {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  margin-bottom: 20px;
+  margin-top: -20px; 
+  margin-left: -20px;
+  width: calc(100% + 40px); 
+}
 
-/* 2. Ops Painel */
+.airplane-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.65);
+}
+
+.airline-info {
+  position: absolute;
+  bottom: 15px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.airline-logo {
+  width: 45px;
+  height: 45px;
+  border-radius: 6px;
+  background: white;
+  padding: 3px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+.airline-name {
+  color: white;
+  font-size: 22px;
+  font-weight: bold;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.8);
+  letter-spacing: 0.5px;
+}
+
+/* 3. Ops Painel */
 .ops-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
 
 .ops-box { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; position: relative; }
@@ -133,12 +178,12 @@ body {
 .time-value, .gate-value { font-size: 13px; color: #0f172a; margin-top: 4px; }
 .time-value.highlighted { font-weight: bold; color: #fe7020; }
 
-/* 3. Mapa Operacional  */
+/* 4. Mapa Operacional  */
 .map-container-ops { margin: 30px 0; }
 .map-container-ops h3 { font-size: 14px; color: #003366; border-bottom: 1px solid #ddd; padding-bottom: 10px; }
 .map-leaflet { height: 300px; border-radius: 8px; border: 1px solid #e2e8f0; }
 
-/* 4. Briefing de IA */
+/* 5. Briefing de IA */
 .briefing-box { background: #e0f2fe; border-left: 4px solid #0284c7; padding: 15px; border-radius: 4px; margin-top: 30px; }
 .briefing-box h3 { margin-top: 0; font-size: 14px; color: #0369a1; }
 .briefing-box p { margin: 0; color: #0c4a6e; line-height: 1.5; font-size: 13px; }
@@ -159,7 +204,7 @@ body {
   .result-card {
     padding: 15px;
   }
-  
+
   .search-container {
     flex-direction: column;
   }
@@ -190,5 +235,11 @@ body {
 
   .map-leaflet {
     height: 250px;
+  }
+
+  .airline-banner {
+    margin-top: -15px;
+    margin-left: -15px;
+    width: calc(100% + 30px);
   }
 }

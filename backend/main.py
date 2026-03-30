@@ -58,7 +58,8 @@ def flight_briefing(flight_number: str):
             "flight_date": "Today",
             "flight_status": status,
             "departure": {"iata": origin, "terminal": "S/N", "gate": "S/N", "scheduled": "S/N"},
-            "arrival": {"iata": destination, "terminal": "S/N", "gate": "S/N", "scheduled": "S/N"}
+            "arrival": {"iata": destination, "terminal": "S/N", "gate": "S/N", "scheduled": "S/N"},
+            "airline": {"name": "GOL Linhas Aéreas", "iata": "G3"}
         }
     
     else:
