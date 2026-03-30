@@ -147,6 +147,19 @@ body {
    RESPONSIVIDADE (MOBILE FIT)
    ========================================= */
 @media (max-width: 768px) {
+
+  .container {
+    padding: 10px;
+  }
+
+  .dashboard {
+    padding: 15px;
+  }
+
+  .result-card {
+    padding: 15px;
+  }
+  
   .search-container {
     flex-direction: column;
   }
